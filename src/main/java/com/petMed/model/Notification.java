@@ -1,4 +1,4 @@
-package com.notification_svc.model;
+package com.petMed.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,9 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
+    private String username;
 
     @Column(nullable = false)
     private String email;

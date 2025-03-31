@@ -1,6 +1,6 @@
-package com.notification_svc.repository;
+package com.petMed.repository;
 
-import com.notification_svc.model.Notification;
+import com.petMed.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

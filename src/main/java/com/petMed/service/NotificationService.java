@@ -1,8 +1,8 @@
-package com.notification_svc.service;
+package com.petMed.service;
 
-import com.notification_svc.model.Notification;
-import com.notification_svc.repository.NotificationRepository;
-import com.notification_svc.web.dto.NotificationRequest;
+import com.petMed.model.Notification;
+import com.petMed.repository.NotificationRepository;
+import com.petMed.event.payload.UserRegisterEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -22,17 +22,18 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    public void sendEmail(NotificationRequest notificationRequest) {
+    public void sendEmail(UserRegisterEvent event) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(notificationRequest.getEmail());
-        message.setSubject(notificationRequest.getSubject());
-        message.setText(notificationRequest.getBody());
+        message.setTo(event.getEmail());
+        message.setSubject(event.getEmailSubject());
+        message.setText(event.getEmailBody());
 
         Notification notification = Notification.builder()
-                .email(notificationRequest.getEmail())
-                .subject(notificationRequest.getSubject())
-                .body(notificationRequest.getBody())
+                .username(event.getUsername())
+                .email(event.getEmail())
+                .subject(event.getEmailSubject())
+                .body(event.getEmailBody())
                 .createdOn(LocalDateTime.now())
                 .build();
 
