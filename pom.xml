@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>emailNotification-svc</artifactId>
+	<artifactId>notification-svc</artifactId>
 	<version>1.0.1</version>
-	<name>emailNotification-svc</name>
+	<name>notification-svc</name>
 	<description>Notification Service</description>
 	<url/>
 	<licenses>
@@ -79,6 +79,12 @@
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>2.2.224</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

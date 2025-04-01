@@ -16,6 +16,6 @@ public class UserRegisterEventConsumer {
 
     @KafkaListener(topics = "user-register-event", groupId = "notification-svc-group")
     public void consumeEvent(UserRegisterEvent event) {
-        notificationService.sendEmail(event);
+        notificationService.sendConfirmRegistrationEmail(event);
     }
 }
