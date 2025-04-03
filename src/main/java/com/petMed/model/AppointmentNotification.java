@@ -1,10 +1,7 @@
 package com.petMed.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +9,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,4 +44,7 @@ public class AppointmentNotification {
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
+
+    @Column(nullable = false)
+    private NotificationStatus status;
 }

@@ -3,6 +3,7 @@ package com.petMed.service;
 import com.petMed.email.EmailTemplates;
 import com.petMed.mapper.AppointmentNotificationMapper;
 import com.petMed.model.AppointmentNotification;
+import com.petMed.model.NotificationStatus;
 import com.petMed.model.UserRegisterNotification;
 import com.petMed.repository.AppointmentNotificationRepository;
 import com.petMed.web.dto.AppointmentBookedRequest;
@@ -10,7 +11,6 @@ import com.petMed.repository.UserRegisterNotificationRepository;
 import com.petMed.event.payload.UserRegisterEvent;
 import com.petMed.web.dto.UpcomingAppointmentNotification;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -81,6 +84,7 @@ public class NotificationService {
                 .subject(message.getSubject())
                 .body(message.getText())
                 .createdOn(LocalDateTime.now())
+                .status(NotificationStatus.NOT_SEEN)
                 .build();
 
         appointmentNotificationRepository.save(appointmentNotification);
@@ -93,11 +97,27 @@ public class NotificationService {
     }
 
     public List<UpcomingAppointmentNotification> getUpcomingAppointmentNotifications(String username, LocalDate today) {
-        List<UpcomingAppointmentNotification> upcomingNotifications = appointmentNotificationRepository.findAllByPetOwnerUsernameOrderByDateDescTimeAsc(username, today)
+        List<UpcomingAppointmentNotification> upcomingAppointments = appointmentNotificationRepository
+                .findAllByPetOwnerUsernameOrderByDateDescTimeAsc(username, today, NotificationStatus.NOT_SEEN)
                 .stream()
                 .limit(10)
                 .map(AppointmentNotificationMapper::mapToUpcomingAppointmentNotification)
                 .toList();
-        return upcomingNotifications;
+        return upcomingAppointments;
+    }
+
+    public void changeStatusToSeen(UUID notificationId) {
+        AppointmentNotification appointmentNotification = findById(notificationId);
+            appointmentNotification.setStatus(NotificationStatus.SEEN);
+            appointmentNotificationRepository.save(appointmentNotification);
+
+    }
+
+    public AppointmentNotification findById(UUID notificationId) {
+        Optional<AppointmentNotification> byId = appointmentNotificationRepository.findById(notificationId);
+        if (byId.isEmpty()) {
+            throw new NoSuchElementException("Notification not found");
+        }
+        return byId.get();
     }
 }

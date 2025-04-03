@@ -11,6 +11,7 @@ public class AppointmentNotificationMapper {
 
     public static UpcomingAppointmentNotification mapToUpcomingAppointmentNotification(AppointmentNotification appointmentNotification) {
         UpcomingAppointmentNotification upcomingAppointmentNotification = new UpcomingAppointmentNotification();
+        upcomingAppointmentNotification.setNotificationId(appointmentNotification.getId());
         upcomingAppointmentNotification.setPetName(appointmentNotification.getPetName());
         upcomingAppointmentNotification.setDate(appointmentNotification.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         upcomingAppointmentNotification.setTime(appointmentNotification.getTime().format(DateTimeFormatter.ofPattern("HH:mm")));

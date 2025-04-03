@@ -13,6 +13,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -56,5 +57,16 @@ public class NotificationControllerApiTest {
                 .andExpect(status().isOk());
 
         verify(notificationService, times(1)).getUpcomingAppointmentNotifications(any(), any());
+    }
+
+    @Test
+    void closeNotification_Success() throws Exception {
+        UUID uuid = UUID.randomUUID();
+
+        doNothing().when(notificationService).changeStatusToSeen(any());
+
+        mockMvc.perform(get("/api/notifications/close-notification")
+                        .param("notificationId", uuid.toString()))
+                .andExpect(status().isOk());
     }
 }
