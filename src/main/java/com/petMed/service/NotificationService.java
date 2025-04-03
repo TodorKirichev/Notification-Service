@@ -1,19 +1,24 @@
 package com.petMed.service;
 
 import com.petMed.email.EmailTemplates;
+import com.petMed.mapper.AppointmentNotificationMapper;
 import com.petMed.model.AppointmentNotification;
 import com.petMed.model.UserRegisterNotification;
 import com.petMed.repository.AppointmentNotificationRepository;
 import com.petMed.web.dto.AppointmentBookedRequest;
 import com.petMed.repository.UserRegisterNotificationRepository;
 import com.petMed.event.payload.UserRegisterEvent;
+import com.petMed.web.dto.UpcomingAppointmentNotification;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -85,5 +90,14 @@ public class NotificationService {
         } catch (Exception e) {
             log.error("Failed to send email", e);
         }
+    }
+
+    public List<UpcomingAppointmentNotification> getUpcomingAppointmentNotifications(String username, LocalDate today) {
+        List<UpcomingAppointmentNotification> upcomingNotifications = appointmentNotificationRepository.findAllByPetOwnerUsernameOrderByDateDescTimeAsc(username, today)
+                .stream()
+                .limit(10)
+                .map(AppointmentNotificationMapper::mapToUpcomingAppointmentNotification)
+                .toList();
+        return upcomingNotifications;
     }
 }
